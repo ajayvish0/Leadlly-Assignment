@@ -34,9 +34,11 @@ const UserSchema = new mongoose.Schema({
     maxLength: 20,
   },
 });
+const BlacklistedSchema = new mongoose.Schema({ token: String });
 
 const ProductSchema = new mongoose.Schema({ name: String, price: Number });
 const Product = mongoose.model("Product", ProductSchema);
 const User = mongoose.model("User", UserSchema);
+const Blacklisted = mongoose.model("Blacklisted", BlacklistedSchema);
 
-module.exports = { User, Product };
+module.exports = { User, Product, Blacklisted };

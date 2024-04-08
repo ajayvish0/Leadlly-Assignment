@@ -1,5 +1,5 @@
 const express = require("express");
-const { User } = require("../db");
+const { User, Blacklisted } = require("../db");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = require("../Secret");
 
@@ -69,6 +69,24 @@ router.put("/edit", authentication, async (req, res) => {
     message: "User updated successfully",
     data: updateUser,
   });
+});
+router.post("/logout", async (req, res) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(400).send("Token is missing");
+  }
+  try { 
+   const decode =  jwt.verify(token, JWT_SECRET), 
+    if(!decode){
+      return res.status(400).send("Invalid token");
+    }
+    const blacklisted = await Blacklisted.create({ token });
+    res.json({
+      message: "User logged out successfully"})
+  } catch (error) {
+    console.error('Error logging out:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 module.exports = router;
